@@ -47,7 +47,9 @@ export const CreateEditTodo = ({ id }: Props) => {
         </Link>
         <div className="bg-gray-100 text-black rounded-lg">
           <div className="px-6 py-5 border-b-2 border-gray-400">
-            <h1 className="font-bold text-2xl">Create/Edit Task</h1>
+            <h1 className="font-bold text-2xl">
+              {id ? "Edit Task" : "Create"}
+            </h1>
           </div>
           <div className="p-6">
             <div className="flex flex-col">
@@ -75,7 +77,10 @@ export const CreateEditTodo = ({ id }: Props) => {
             >
               {id ? "Save" : "Add"}
             </button>
-            <button className="bg-slate-200 flex-1 rounded-xl p-2">
+            <button
+              onClick={() => route.back()}
+              className="bg-slate-200 flex-1 rounded-xl p-2"
+            >
               Cancel
             </button>
           </div>
