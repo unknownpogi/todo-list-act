@@ -19,7 +19,7 @@ const View = () => {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-5 md:grid-cols-3 gap-4 w-auto p-5 mx-15 md:h-10">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 md:grid-cols-3 gap-4 w-auto p-5 mx-15 md:h-10">
       {allNotes.map((note) => {
         return (
           <div key={note.id} className="bg-white rounded-3xl p-5">
@@ -27,7 +27,9 @@ const View = () => {
               <h1 className="font-bold text-xl text-black">{note.title}</h1>
             </div>
             <div className="pt-2 border-b-2">
-              <p className="text-sm text-gray-400 mb-3">{note.notes}</p>
+              <p className="text-sm text-gray-400 mb-3 line-clamp-4">
+                {note.notes}
+              </p>
             </div>
 
             <div className="flex justify-end pt-5 gap-3">
