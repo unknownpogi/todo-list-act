@@ -1,7 +1,8 @@
 "use client";
 
-import { listNotesAtom } from "@/atoms/atom";
+import { allNotesAtom, listNotesAtom } from "@/atoms/atom";
 import { useAtom } from "jotai";
+import { RESET } from "jotai/utils";
 import { Pencil, Trash2, TriangleAlert } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -10,44 +11,52 @@ const View = () => {
   const [allNotes, setAllNotes] = useAtom(listNotesAtom);
   const [openModal, setOpenModal] = useState(false);
   const [selectedNote, setSelectedNote] = useState(0);
+  const [allStoredNotes, setAllStoredNotes] = useAtom(allNotesAtom);
 
+  // setAllStoredNotes(RESET);
   const handleDelete = () => {
-    setAllNotes((prevNotes) => {
+    setAllStoredNotes((prevNotes) => {
       return prevNotes.filter((prev) => prev.id !== selectedNote);
     });
     setOpenModal(false);
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 md:grid-cols-3 gap-4 w-auto p-5 mx-15 md:h-10">
-      {allNotes.map((note) => {
-        return (
-          <div key={note.id} className="bg-white rounded-3xl p-5">
-            <div>
-              <h1 className="font-bold text-xl text-black">{note.title}</h1>
-            </div>
-            <div className="pt-2 border-b-2">
-              <p className="text-sm text-gray-400 mb-3 line-clamp-4">
-                {note.notes}
-              </p>
-            </div>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 md:grid-cols-3 gap-4 w-auto p-5 lg:mx-15 md:h-10">
+      {allStoredNotes.length > 0 ? (
+        allStoredNotes.map((note) => {
+          return (
+            <div key={note.id} className="bg-white rounded-3xl p-5 shadow-2xl">
+              <div>
+                <h1 className="font-bold text-xl text-black">{note.title}</h1>
+              </div>
+              <div className="pt-2 border-b-2">
+                <p className="text-sm text-gray-400 mb-3 line-clamp-4">
+                  {note.notes}
+                </p>
+              </div>
 
-            <div className="flex justify-end pt-5 gap-3">
-              <Link href={`/${note.id}/view-details`}>
-                <Pencil className="text-gray-400" size={20} />
-              </Link>
-              <button
-                onClick={() => {
-                  setSelectedNote(note.id);
-                  setOpenModal(true);
-                }}
-              >
-                <Trash2 className="text-gray-400" size={20} />
-              </button>
+              <div className="flex justify-end pt-5 gap-3">
+                <Link href={`/${note.id}/view-details`}>
+                  <Pencil className="text-gray-400" size={20} />
+                </Link>
+                <button
+                  onClick={() => {
+                    setSelectedNote(note.id);
+                    setOpenModal(true);
+                  }}
+                >
+                  <Trash2 className="text-gray-400" size={20} />
+                </button>
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })
+      ) : (
+        <div>
+          <p>No Notes Stored</p>
+        </div>
+      )}
 
       {openModal && (
         <div

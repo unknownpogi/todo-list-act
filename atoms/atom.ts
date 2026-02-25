@@ -13,46 +13,13 @@ export const listNotesAtom = atom([
         id: 2,
         title: 'Update Project README',
         notes: 'Add installation instructions, environment variable setup, and a brief architecturalsjfjlsdhfkjsdfkjlsd'
-    },
-    {
-        id: 3,
-        title: 'Update Project README',
-        notes: 'Add installation instructions, environment variable setup, and a brief architectural ahsfhasdofhasdofhoasd'
-    },
-    {
-        id: 4,
-        title: 'Update Project README',
-        notes: 'Add installation instructions, environment variable setup, and a brief architectura lhsfshddfhsdfosd'
-    },
-    {
-        id: 5,
-        title: 'Update Project README',
-        notes: 'Add installation instructions, environment variable setup, and a brief architecturakjhfjshdfhsdlflsdlflsd'
-    },
-    {
-        id: 6,
-        title: 'Update Project README',
-        notes: 'Add installation instructions, environment variable setup, and a brief architecturakjsfjksdfklsdj;fds'
-    },
-    {
-        id: 7,
-        title: 'Update Project README',
-        notes: 'Add installation instructions, environment variable setup, and a brief architecturalknfnjsdfksdf'
-    },
-    {
-        id: 8,
-        title: 'Update Project README',
-        notes: 'Add installation instructions, environment variable setup, and a brief architecturasfkjsdfkjsdkjfds'
-    },
-    {
-        id: 9,
-        title: 'Update Project README',
-        notes: 'Add installation instructions, environment variable setup, and a brief architecturalksnfjksdkfsdlk'
-    },
-])
+    }
+]);
 
-// export const allNotesAtom = atomWithStorage<{id:number, title: string, notes: string}[]>('atoms', [{
-//     id: 0 ,
-//     title: '',
-//     notes: ''
-// }]);
+type Note = {
+    id: number;
+    title: string;
+    notes: string
+}
+
+export const allNotesAtom = atomWithStorage<Note[]>('notes-storage', []);

@@ -4,7 +4,7 @@ import { CirclePlus } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export const Header = () => {
+const Header = () => {
   const pathname = usePathname();
 
   if (
@@ -16,8 +16,8 @@ export const Header = () => {
   }
 
   return (
-    <header className="px-4">
-      <div className="flex px-15 justify-between">
+    <header className="lg:px-4 mb-2">
+      <div className="flex lg:px-15 justify-between">
         <div>
           <h1 className="font-medium text-4xl">My Task</h1>
         </div>
@@ -30,3 +30,5 @@ export const Header = () => {
     </header>
   );
 };
+
+export default Header;

@@ -1,6 +1,6 @@
 "use client";
 
-import { listNotesAtom } from "@/atoms/atom";
+import { allNotesAtom, listNotesAtom } from "@/atoms/atom";
 import { useAtom } from "jotai";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -14,13 +14,14 @@ type Props = {
 export const CreateEditTodo = ({ id }: Props) => {
   const route = useRouter();
   const [allNotes, setAllNotes] = useAtom(listNotesAtom);
+  const [allStoredNotes, setAllStoredNotes] = useAtom(allNotesAtom);
   const numericId = id ? Number(id) : undefined;
-  const notess = allNotes.find((note) => note.id === numericId);
+  const notess = allStoredNotes.find((note) => note.id === numericId);
   const [title, setTitle] = useState(notess?.title || "");
   const [notes, setNotes] = useState(notess?.notes || "");
 
   const handleAddSave = () => {
-    setAllNotes((notess) => {
+    setAllStoredNotes((notess) => {
       if (id) {
         return notess.map((item) =>
           item.id === numericId ? { ...item, title, notes } : item,
@@ -45,7 +46,7 @@ export const CreateEditTodo = ({ id }: Props) => {
           <ArrowLeft size={18} />
           Back to list
         </Link>
-        <div className="bg-gray-100 text-black rounded-lg">
+        <div className="bg-gray-200 text-black shadow-2xl rounded-xl">
           <div className="px-6 py-5 border-b-2 border-gray-400">
             <h1 className="font-bold text-2xl">
               {id ? "Edit Task" : "Create"}

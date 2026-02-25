@@ -1,6 +1,6 @@
 "use client";
 
-import { listNotesAtom } from "@/atoms/atom";
+import { allNotesAtom, listNotesAtom } from "@/atoms/atom";
 import { useAtom } from "jotai";
 import { ArrowLeft, Pencil } from "lucide-react";
 import Link from "next/link";
@@ -11,9 +11,10 @@ type Props = {
 
 const ViewDetails = ({ id }: Props) => {
   const [selectedNotes, setSelectedNotes] = useAtom(listNotesAtom);
+  const [allStoredNotes, setAllStoredNotes] = useAtom(allNotesAtom);
   const numericId = id ? Number(id) : undefined;
 
-  const notess = selectedNotes.find((note) => note.id === numericId);
+  const notess = allStoredNotes.find((note) => note.id === numericId);
 
   return (
     <div className="flex justify-center">
