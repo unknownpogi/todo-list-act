@@ -1,24 +1,42 @@
 "use client";
 
-import { allNotesAtom, listNotesAtom } from "@/atoms/atom";
-import { useAtom } from "jotai";
-import { RESET } from "jotai/utils";
+import { useAllTasks, useDeleteTask } from "@/hooks/task";
+import { Note } from "@/types";
+import axios from "axios";
 import { Pencil, Trash2, TriangleAlert } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const View = () => {
-  const [allNotes, setAllNotes] = useAtom(listNotesAtom);
   const [openModal, setOpenModal] = useState(false);
-  const [selectedNote, setSelectedNote] = useState(0);
-  const [allStoredNotes, setAllStoredNotes] = useAtom(allNotesAtom);
+  const [selectedNote, setSelectedNote] = useState("");
+  const [allStoredNotes, setAllStoredNotes] = useState<Note[]>([]);
+  const { data, isLoading, isFetching, isError, isSuccess } = useAllTasks();
+  const deleteTask = useDeleteTask();
 
-  // setAllStoredNotes(RESET);
-  const handleDelete = () => {
-    setAllStoredNotes((prevNotes) => {
-      return prevNotes.filter((prev) => prev.id !== selectedNote);
+  useEffect(() => {
+    if (data?.data) {
+      setAllStoredNotes(data.data);
+    }
+  }, [data]);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <h1>Loading...</h1>
+      </div>
+    );
+  }
+
+  if (isError) return <p>Error loading tasks</p>;
+
+  const handleDelete = async () => {
+    if (!selectedNote) return;
+
+    deleteTask.mutate(selectedNote, {
+      onError: (err) => console.log("Error deleting task", err),
+      onSuccess: () => setOpenModal(false),
     });
-    setOpenModal(false);
   };
 
   return (
@@ -26,7 +44,10 @@ const View = () => {
       {allStoredNotes.length > 0 ? (
         allStoredNotes.map((note) => {
           return (
-            <div key={note.id} className="bg-white rounded-3xl p-5 shadow-2xl">
+            <div
+              key={note.documentId}
+              className="bg-white rounded-3xl p-5 shadow-2xl"
+            >
               <div>
                 <h1 className="font-bold text-xl text-black">{note.title}</h1>
               </div>
@@ -37,12 +58,12 @@ const View = () => {
               </div>
 
               <div className="flex justify-end pt-5 gap-3">
-                <Link href={`/${note.id}/view-details`}>
+                <Link href={`/${note.documentId}/view-details`}>
                   <Pencil className="text-gray-400" size={20} />
                 </Link>
                 <button
                   onClick={() => {
-                    setSelectedNote(note.id);
+                    setSelectedNote(note.documentId);
                     setOpenModal(true);
                   }}
                 >

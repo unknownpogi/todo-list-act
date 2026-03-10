@@ -1,6 +1,9 @@
 "use client";
 
 import { allNotesAtom, listNotesAtom } from "@/atoms/atom";
+import { useAddTask, useTask, useUpdateTask } from "@/hooks/task";
+import { Note, Task } from "@/types";
+import axios from "axios";
 import { useAtom } from "jotai";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -13,30 +16,57 @@ type Props = {
 
 export const CreateEditTodo = ({ id }: Props) => {
   const route = useRouter();
-  const [allNotes, setAllNotes] = useAtom(listNotesAtom);
-  const [allStoredNotes, setAllStoredNotes] = useAtom(allNotesAtom);
-  const numericId = id ? Number(id) : undefined;
-  const notess = allStoredNotes.find((note) => note.id === numericId);
-  const [title, setTitle] = useState(notess?.title || "");
-  const [notes, setNotes] = useState(notess?.notes || "");
+  const {
+    data,
+    isLoading: isTaskLoading,
+    isFetching,
+    isError: isTaskError,
+    isSuccess,
+  } = useTask(id);
+  const [title, setTitle] = useState("");
+  const [notes, setNotes] = useState("");
+  const {
+    mutate: addTask,
+    status,
+    isError: isAddError,
+    isSuccess: isAddSuccess,
+  } = useAddTask();
+  const { data: updatedTask, isError, mutate: updateTask } = useUpdateTask();
+
+  useEffect(() => {
+    if (data?.data?.title) {
+      setTitle(data.data.title);
+      setNotes(data.data.notes);
+    }
+  }, [data]);
+
+  if (isTaskLoading) return <p>Loading task...</p>;
+  if (isTaskError) return <p>Error loading task.</p>;
 
   const handleAddSave = () => {
-    setAllStoredNotes((notess) => {
-      if (id) {
-        return notess.map((item) =>
-          item.id === numericId ? { ...item, title, notes } : item,
-        );
-      }
-      return [
-        ...notess,
+    if (id) {
+      updateTask(
+        { id, title, notes },
         {
-          id: notess.length + 1,
-          title: title,
-          notes: notes,
+          onSuccess: () => {
+            console.log("Task updated!");
+            route.replace("/");
+          },
+          onError: (err) => console.error("Update failed", err),
         },
-      ];
-    });
-    route.push("/");
+      );
+    } else {
+      addTask(
+        { title, notes },
+        {
+          onSuccess: () => {
+            console.log("Task added!");
+            route.replace("/");
+          },
+          onError: (err) => console.error("Add failed", err),
+        },
+      );
+    }
   };
 
   return (
